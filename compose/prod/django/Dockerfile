@@ -6,7 +6,7 @@ FROM python as python-build-stage
 
 ARG BUILD_ENVIRONMENT=prod
 # Install apt packages
-RUN apt-get update && apt-get install --no-install-recommends -y \
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && apt-get update && apt-get install --no-install-recommends -y \
   # dependencies for building Python packages
   build-essential \
   # psycopg2 dependencies
@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 COPY ./requirements .
 # Create Python Dependency and Sub-Dependency Wheels.
 RUN pip wheel --wheel-dir /usr/src/app/wheels  \
-  -r ${BUILD_ENVIRONMENT}.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+  -r local.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # Python 'run' stage
 FROM python as python-run-stage
@@ -39,7 +39,7 @@ ENV BUILD_ENV ${BUILD_ENVIRONMENT}
 WORKDIR ${APP_HOME}
 
 # Install required system dependencies
-RUN apt-get update && apt-get install --no-install-recommends -y \
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && apt-get update && apt-get install --no-install-recommends -y \
   # psycopg2 dependencies
   libpq-dev \
   # Translations dependencies
@@ -73,5 +73,5 @@ RUN chmod +x /start-celerybeat
 
 # copy application code to WORKDIR
 COPY . ${APP_HOME}
-RUN python setup_in_docker.py
+# RUN python setup_in_docker.py
 CMD ["/start"]

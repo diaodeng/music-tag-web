@@ -30,6 +30,15 @@
                         </bk-dropdown-menu>
                     </div>
                 </div>
+                <div style="margin-top: 10px;display: flex;align-items: center;">
+                    <label>显示内容</label>
+                    <select v-model="showContent">
+                        <option value="1">文件名</option>
+                        <option value="2">歌曲名</option>
+                        <option value="3">作者</option>
+                        <option value="4">专辑</option>
+                    </select>
+                </div>
                 <transition name="bk-slide-fade-down">
                     <div style="margin-top: 10px;" v-show="fadeShowDir">
                         <bk-tree
@@ -643,6 +652,7 @@
                     {id: 'single', name: '单曲'}
                 ],
                 searchWord: '',
+                showContent: 1,
                 treeListOne: [],
                 fullPath: '',
                 fileName: '',
@@ -722,6 +732,7 @@
                 sourceList: [],
                 tidyFormData: {
                     root_path: '/app/media/',
+                    // root_path: 'C:\\myself\\音乐',
                     first_dir: 'artist',
                     second_dir: ''
                 },
@@ -760,6 +771,7 @@
                         return fullPath
                     } else {
                         return '/app/media/'
+                        // return 'C:\\myself\\音乐'
                     }
                 },
                 set(value) {
@@ -962,7 +974,7 @@
                 this.fadeShowDir = false
                 this.checkedData = []
                 this.checkedIds = []
-                this.$api.Task.fileList({'file_path': this.filePath, sorted_fields: this.sortedField}).then((res) => {
+                this.$api.Task.fileList({'file_path': this.filePath, sorted_fields: this.sortedField, 'show_content': this.showContent}).then((res) => {
                     if (res.result) {
                         this.treeListOne = res.data
                         this.fadeShowDir = true

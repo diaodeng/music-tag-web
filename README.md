@@ -45,6 +45,17 @@ DEMO 地址账号密码为：admin/admin
 
 镜像已上传至Dockerhub 操作指南：
 
+### 构建docker镜像，根目录执行命令
+`docker build -t music-tag-web-self -f compose/prod/django/Dockerfile .`
+
+如果需要代理
+```
+docker build -t music-tag-web-self -f compose/prod/django/Dockerfile . \ 
+--build-arg "HTTP_PROXY=http://88.88.88.88:7890/" \ 
+--build-arg "HTTPS_PROXY=http://88.88.88.88:7890/" \ 
+--build-arg "NO_PROXY=localhost,127.0.0.1,.example.com"
+```
+
 ### 从Docker Hub拉取镜像
 
 1`docker pull xhongc/music_tag_web:latest`
@@ -86,7 +97,7 @@ ps. `/path/to/your/music` 改成你的音乐文件夹路径！`/path/to/your/con
 各位大佬有什么意见需求，欢迎提出issues，我会满足你的需求，在我的能力范围内。
 issue 没及时看到的，可以加群讨论！
 <div>
-<img  src="/img_10.png" width="250">  &nbsp;
+<img  src="/img_9.png" width="250">  &nbsp;
 </div>
 ## 发布频道：
 
@@ -99,6 +110,15 @@ issue 没及时看到的，可以加群讨论！
 <img  src="/img_8.png" width="250">  &nbsp;
 </div>
 
+### 感谢赞助者 🙏
+
+- @cnlaok
+- @qinfengge
+- @itodouble
+- @BruceSuen720
+- @Hy_
+- @*园
+- @Vincent
 # 免责声明
 禁止任何形式的商业用途，包括但不仅限于售卖/打赏/获利，不得使用本代码进行任何形式的牟利/贩卖/传播，再次强调仅供个人私下研究学习技术使用，不提供下载音乐本体！ 本项目仅以纯粹的技术目的去学习研究，如有侵犯到任何人的合法权利，请致信408737515@qq.com，我将在第一时间修改删除相关代码，谢谢！
 

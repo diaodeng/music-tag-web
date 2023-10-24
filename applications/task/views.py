@@ -24,6 +24,13 @@ from component.drf.viewsets import GenericViewSet
 from django_vue_cli.celery_app import app as celery_app
 
 
+class ShowContentEum:
+    FILE_NAME = 1
+    MUSIC_NAME = 2
+    AUTHOR = 3
+    ALBUM = 4
+
+
 @method_decorator(gzip_page, name="dispatch")
 class TaskViewSets(GenericViewSet):
     def get_serializer_class(self):
@@ -53,6 +60,7 @@ class TaskViewSets(GenericViewSet):
         validate_data = self.is_validated_data(request.data)
         file_path = validate_data['file_path']
         sorted_fields = validate_data['sorted_fields']
+        show_content = validate_data["show_content"]
         file_path_list = file_path.split('/')
         try:
             data = os.scandir(file_path)
@@ -99,10 +107,20 @@ class TaskViewSets(GenericViewSet):
                 icon = "icon-script-files"
             else:
                 icon = "icon-script-file"
+
+            show_text = each
+            if int(show_content) == ShowContentEum.MUSIC_NAME:
+                show_text = MusicIDS(entry.get("path")).title or "-----unknow-----"
+            elif int(show_content) == ShowContentEum.AUTHOR:
+                show_text = MusicIDS(entry.get("path")).artist_name or "-----unknow-----"
+            elif int(show_content) == ShowContentEum.ALBUM:
+                show_text = MusicIDS(entry.get("path")).album_name or "-----unknow-----"
+
             children_data.append({
                 "id": index,
                 "name": each,
-                "title": each,
+                "title": show_text,
+                # "title": each,
                 "icon": icon,
                 "state": task_map.get(each, "null"),
                 "size": entry.get("size"),

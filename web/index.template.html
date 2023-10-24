@@ -5,6 +5,21 @@
         <meta name=viewport content="width=device-width,initial-scale=1">
         <title>音乐标签Web版｜Music Tag Web｜</title>
         <link rel="shortcut icon" href="/static/dist/img/favicon_64.ico" type="image/x-icon"></link>
+        <link href="./static/dist/css/app.css" rel="stylesheet">
+        <style>
+        ::-webkit-scrollbar {
+            width: 10px !important;
+        }
+
+        div.file-section {
+            overflow-y: hidden;
+        }
+
+        div.file-section > div > div:last-child {
+            overflow-y: auto;
+            height: calc(100vh - 220px);
+        }
+    </style>
     </head>
     <body>
         <script>
