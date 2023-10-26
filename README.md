@@ -1,5 +1,7 @@
 ![](music-tag.png)
 
+> 增加了左侧滚动条、左侧搜索框固定、左侧树中显示内容切换，只是个菜鸟样式实现比较丑，凑合中用，感谢原作者！！！
+
 # 🚀 Music Tag Web
 
 『音乐标签』Web版是一款可以编辑歌曲的标题，专辑，艺术家，歌词，封面等信息的音乐标签编辑器程序， 支持FLAC, APE, WAV, AIFF, WV, TTA, MP3, M4A, OGG, MPC, OPUS, WMA, DSF,
@@ -35,26 +37,39 @@ DEMO 地址账号密码为：admin/admin
 
 [【音乐标签Web｜Music Tag Web】](http://42.193.218.103:8002/#/)
 
-# 🔨 How to Build
+### 版本信息
+1. node:v16.20.2
+2. npm:8.19.4
+3. Python:3.9.12
+4. python包见requirements.txt
 
+# 🔨 How to Build
+### 打包前端项目
+```shell
+# 在web目录下执行
+npm run build
+```
+
+### docker-compose
 1. docker-compose -f local.yml build
 2. docker-compose -f local.yml up
+
+### docker
+```shell
+# 构建docker镜像，在项目根目录执行
+docker build -t music-tag-web -f compose/prod/django/Dockerfile .
+
+# 如果需要代理
+docker build -t music-tag-web -f compose/prod/django/Dockerfile . \ 
+--build-arg "HTTP_PROXY=http://88.88.88.88:7890/" \ 
+--build-arg "HTTPS_PROXY=http://88.88.88.88:7890/" \ 
+--build-arg "NO_PROXY=localhost,127.0.0.1,.example.com"
+```
 
 # 💯 How to Use
 [【使用手册】](https://xiers-organization.gitbook.io/music-tag-web/)
 
 镜像已上传至Dockerhub 操作指南：
-
-### 构建docker镜像，根目录执行命令
-`docker build -t music-tag-web-self -f compose/prod/django/Dockerfile .`
-
-如果需要代理
-```
-docker build -t music-tag-web-self -f compose/prod/django/Dockerfile . \ 
---build-arg "HTTP_PROXY=http://88.88.88.88:7890/" \ 
---build-arg "HTTPS_PROXY=http://88.88.88.88:7890/" \ 
---build-arg "NO_PROXY=localhost,127.0.0.1,.example.com"
-```
 
 ### 从Docker Hub拉取镜像
 

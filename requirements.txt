@@ -15,8 +15,8 @@ Pillow==9.4.0
 pycryptodomex==3.17
 Mako==1.0.6
 django-mysql==3.8.1
-pyexecjs
-tqdm
-lxml
-pathos
-cython
+PyExecJS==1.5.1
+tqdm==4.66.1
+lxml==4.9.3
+pathos==0.3.1
+Cython==3.0.4
