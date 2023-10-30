@@ -3,6 +3,7 @@ import copy
 import copy
 import os
 import time
+import asyncio
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.gzip import gzip_page
@@ -31,6 +32,76 @@ class ShowContentEum:
     ALBUM = 4
 
 
+async def async_handle_entry(entrys, show_content, task_map):
+    tasks = []
+    index = 1
+    for entry in entrys:
+        # each = entry.name.encode('utf-8', 'replace').decode()
+        # file_type = each.split(".")[-1]
+        # if file_type not in ALLOW_TYPE:
+        #     continue
+        tasks.append(asyncio.ensure_future(handle_entry(entry, index, show_content, task_map)))
+        index += 1
+    res = await asyncio.gather(*tasks)
+
+    return [re for re in res if re is not None]
+
+
+async def handle_entry(entry, index, show_content, task_map):
+    result = await handle_path(entry=entry,
+                               index=index,
+                               show_content=show_content,
+                               task_map=task_map)
+    return result
+
+
+async def handle_path(entry, index, show_content, task_map):
+    print(f"是同时运行的吗：{time.process_time()}")
+    each = entry.name.encode('utf-8', 'replace').decode()
+    path = entry.path.encode('utf-8', 'replace').decode()
+    update_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(entry.stat().st_mtime))
+    size = entry.stat().st_size
+
+    file_type = each.split(".")[-1]
+
+    if entry.is_dir():
+        return {
+            "id": index,
+            "name": each,
+            "title": each,
+            "icon": "icon-folder",
+            "state": "null",
+            "children": [],
+            "size": size,
+            "update_time": update_time
+        }
+    if file_type not in ALLOW_TYPE:
+        return None
+    if file_type in ["lrc", "txt"]:
+        icon = "icon-script-files"
+    else:
+        icon = "icon-script-file"
+
+    show_text = each
+    if int(show_content) == ShowContentEum.MUSIC_NAME:
+        show_text = MusicIDS(path).title or "-----unknow-----"
+    elif int(show_content) == ShowContentEum.AUTHOR:
+        show_text = MusicIDS(path).artist_name or "-----unknow-----"
+    elif int(show_content) == ShowContentEum.ALBUM:
+        show_text = MusicIDS(path).album_name or "-----unknow-----"
+
+    return {
+        "id": index,
+        "name": each,
+        "title": show_text,
+        # "title": each,
+        "icon": icon,
+        "state": task_map.get(each, "null"),
+        "size": size,
+        "update_time": update_time
+    }
+
+
 @method_decorator(gzip_page, name="dispatch")
 class TaskViewSets(GenericViewSet):
     def get_serializer_class(self):
@@ -55,8 +126,9 @@ class TaskViewSets(GenericViewSet):
         return FileListSerializer
 
     @action(methods=['POST'], detail=False)
-    def file_list(self, request, *args, **kwargs):
+    def file_list_back(self, request, *args, **kwargs):
         """文件列表"""
+        start_time = time.perf_counter()
         validate_data = self.is_validated_data(request.data)
         file_path = validate_data['file_path']
         sorted_fields = validate_data['sorted_fields']
@@ -142,6 +214,53 @@ class TaskViewSets(GenericViewSet):
                 "icon": "icon-folder",
             }
         ]
+        print(f"未使用协程执行时间：{time.perf_counter() - start_time}")
+        return self.success_response(data=res_data)
+
+    @action(methods=['POST'], detail=False)
+    def file_list(self, request, *args, **kwargs):
+        """文件列表"""
+        start_time = time.perf_counter()
+        validate_data = self.is_validated_data(request.data)
+        file_path = validate_data['file_path']
+        sorted_fields = validate_data['sorted_fields']
+        show_content = validate_data["show_content"]
+        file_path_list = file_path.split('/')
+
+        try:
+            data = os.scandir(file_path)
+        except FileNotFoundError:
+            return self.failure_response(msg="文件夹不存在")
+
+        task_map = dict(Task.objects.filter(parent_path=file_path).values_list("filename", "state"))
+
+        children_data = []
+
+        new_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(new_loop)
+        loop = asyncio.get_event_loop()
+        tasks = [asyncio.ensure_future(async_handle_entry(data, show_content, task_map))]
+        loop.run_until_complete(asyncio.wait(tasks))
+        children_data = tasks[0].result()
+        loop.close()
+
+        if "name" in sorted_fields:
+            children_data = sorted(children_data, key=lambda x: x.get("name").encode('gbk', "ignore"), reverse=False)
+        if "update_time" in sorted_fields:
+            children_data = sorted(children_data, key=lambda x: x.get("update_time"), reverse=True)
+        if "size" in sorted_fields:
+            children_data = sorted(children_data, key=lambda x: x.get("size"), reverse=True)
+        res_data = [
+            {
+                "name": file_path_list[-1],
+                "title": file_path_list[-1],
+                "expanded": True,
+                "id": 0,
+                "children": children_data,
+                "icon": "icon-folder",
+            }
+        ]
+        print(f"使用协程执行时间：{time.perf_counter() - start_time}")
         return self.success_response(data=res_data)
 
     @action(methods=['POST'], detail=False)

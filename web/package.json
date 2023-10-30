@@ -18,6 +18,7 @@
     "diff-match-patch": "^1.0.5",
     "echarts": "^5.1.1",
     "element-resize-detector": "^1.1.15",
+    "escape-string-regexp": "^5.0.0",
     "font-awesome": "^4.7.0",
     "iview": "^3.2.2",
     "jquery": "^2.2.4",

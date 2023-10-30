@@ -732,7 +732,7 @@
                 sourceList: [],
                 tidyFormData: {
                     root_path: '/app/media/',
-                    // root_path: 'C:\\myself\\音乐',
+                    // root_path: 'C:/myself/音乐',
                     first_dir: 'artist',
                     second_dir: ''
                 },
@@ -771,7 +771,7 @@
                         return fullPath
                     } else {
                         return '/app/media/'
-                        // return 'C:\\myself\\音乐'
+                        // return 'C:/myself/音乐'
                     }
                 },
                 set(value) {
