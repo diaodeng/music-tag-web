@@ -8,11 +8,11 @@ services:
     image: music-tag-web:latest
     container_name: music-tag-web
     ports:
-      - "8008:8001"
+      - "3456:8001"
 #      - "6622:22"
     volumes:
 #      - /mnt/c/myself/code/music-tag-web:/app
-      - /mnt/c/Users/Administrator/Documents:/app/media:rw
+      - /mnt/c/myself/音乐:/app/media:rw
       - /mnt/c/myself/music-tag:/app/data
     command: /start
     restart: always

@@ -4,10 +4,7 @@
             <div style="width: 95%;margin-top: 20px;margin-left: 10px;">
                 <div style="display: flex;align-items: center;">
                     <bk-icon type="arrows-left-shape" @click="backDir" style="cursor: pointer;"></bk-icon>
-                    <bk-input :clearable="true" v-model="filePath"
-                        @enter="handleSearchFile"
-                        :placeholder="'请输入文件夹路径：'"
-                        behavior="simplicity">
+                    <bk-input :clearable="true" v-model="filePath" @enter="handleSearchFile" :placeholder="'请输入文件夹路径：'" behavior="simplicity">
                     </bk-input>
                     <bk-icon type="arrows-down-shape" @click="handleSearchFile" style="cursor: pointer;"></bk-icon>
                 </div>
@@ -16,16 +13,12 @@
                     <div style="margin-left: 10px;margin-right: 5px;">
                         <bk-dropdown-menu :align="'right'">
                             <template slot="dropdown-trigger">
-                                <span class="dropdown-trigger-btn bk-icon icon-sort"
-                                    style="cursor: pointer;font-size: 20px;"></span>
+                                <span class="dropdown-trigger-btn bk-icon icon-sort" style="cursor: pointer;font-size: 20px;"></span>
                             </template>
                             <ul class="bk-dropdown-list" slot="dropdown-content">
-                                <li><a href="javascript:;" @click="changeSorted('name')"
-                                    :class="{ 'isSelected': sortedField.includes('name') }">名称</a></li>
-                                <li><a href="javascript:;" @click="changeSorted('update_time')"
-                                    :class="{ 'isSelected': sortedField.includes('update_time') }">修改时间</a></li>
-                                <li><a href="javascript:;" @click="changeSorted('size')"
-                                    :class="{ 'isSelected': sortedField.includes('size') }">大小</a></li>
+                                <li><a href="javascript:;" @click="changeSorted('name')" :class="{ 'isSelected': sortedField.includes('name') }">名称</a></li>
+                                <li><a href="javascript:;" @click="changeSorted('update_time')" :class="{ 'isSelected': sortedField.includes('update_time') }">修改时间</a></li>
+                                <li><a href="javascript:;" @click="changeSorted('size')" :class="{ 'isSelected': sortedField.includes('size') }">大小</a></li>
                             </ul>
                         </bk-dropdown-menu>
                     </div>
@@ -60,25 +53,36 @@
         </div>
         <div class="edit-section">
             <transition name="bk-slide-fade-left">
-                <div style="margin-left: 40px;width: 500px;margin-top: 20px;"
-                    v-show="musicInfo.title && checkedIds.length === 0">
+                <div style="margin-left: 40px;width: 500px;margin-top: 20px;" v-show="musicInfo.title && checkedIds.length === 0">
                     <div style="width: 100%;display: flex;align-items: center;">
-                        <bk-button :theme="'success'" :loading="isLoading" @click="handleClick" class="mr10"
-                            style="width: 87%;">
+                        <bk-button :theme="'success'" :loading="isLoading" @click="handleClick" class="mr10" style="width: 87%;">
                             保存信息
                         </bk-button>
                         <div style="margin-left: 6px;cursor: pointer;" @click="exampleSetting3.primary.visible = true">
                             <bk-icon type="cog-shape"></bk-icon>
                         </div>
                     </div>
+                    <div tyle="width: 100%;display: flex;align-items: center;">
+                        <label id="audio-current-time">00:00:00</label>
+                        <input id="progressBar" type="range" min="0" max="100" @click="audioProcessClick">
+                        <label id="audio-duration">00:00:00</label>
+                    </div>
+                    <div tyle="width: 100%;display: flex;align-items: center;">
+                        <audio id="audio-play" :src="staticPath" loop="loop" preload="metadata" @timeupdate="updateProcess" @canplay="audioCanPlay"></audio>
+                        <button onclick="document.querySelector('#audio-play').play()">播放</button>
+                        <button onclick="document.querySelector('#audio-play').pause()">暂停</button>
+                        <button onclick="document.querySelector('#audio-play').muted = true">静音</button>
+                        <button onclick="document.querySelector('#audio-play').muted = false">取消静音</button>
+                        <input type="range" min="0" max="100" onchange="document.querySelector('#audio-play').volume=this.value/100">
+                    </div>
                     <div style="display: flex;margin-bottom: 10px;align-items: center;margin-top: 10px;">
-                        <div class="label1 can-copy" v-bk-tooltips="'变量名:${title}'" v-bk-copy="'${title}'">标题：</div>
+                        <div class="label1 can-copy" v-bk-tooltips="'变量名:${title}'" v-bk-copy="'${title}'">标题：
+                        </div>
                         <div style="width: 70%;">
                             <bk-input :clearable="true" v-model="musicInfo.title"></bk-input>
                         </div>
                         <div>
-                            <bk-icon type="arrows-right-shape" @click="toggleLock('title')"
-                                style="cursor: pointer;color: #64c864;margin-left: 20px;">
+                            <bk-icon type="arrows-right-shape" @click="toggleLock('title')" style="cursor: pointer;color: #64c864;margin-left: 20px;">
                             </bk-icon>
                         </div>
                     </div>
@@ -122,10 +126,7 @@
                                     ext-popover-cls="select-popover-custom"
                                     :placeholder="'请选择歌曲风格'"
                                     searchable>
-                                    <bk-option v-for="option in genreList"
-                                        :key="option.id"
-                                        :id="option.id"
-                                        :name="option.name">
+                                    <bk-option v-for="option in genreList" :key="option.id" :id="option.id" :name="option.name">
                                     </bk-option>
                                 </bk-select>
                             </div>
@@ -141,10 +142,7 @@
                                     ext-popover-cls="select-popover-custom"
                                     :placeholder="'请选择歌曲语言'"
                                     searchable>
-                                    <bk-option v-for="option in languageList"
-                                        :key="option.id"
-                                        :id="option.id"
-                                        :name="option.name">
+                                    <bk-option v-for="option in languageList" :key="option.id" :id="option.id" :name="option.name">
                                     </bk-option>
                                 </bk-select>
                             </div>
@@ -155,8 +153,7 @@
                                 <bk-input :clearable="true" v-model="musicInfo.year"></bk-input>
                             </div>
                         </div>
-                        <div style="display: flex;margin-bottom: 10px;flex-direction: column;"
-                            v-else-if="item === 'lyrics'">
+                        <div style="display: flex;margin-bottom: 10px;flex-direction: column;" v-else-if="item === 'lyrics'">
                             <div style="display: flex;">
                                 <div class="label1">歌词：</div>
                                 <div style="width: 70%;">
@@ -164,8 +161,7 @@
                                     </bk-input>
                                 </div>
                                 <div>
-                                    <bk-icon type="arrows-right-shape" @click="translation()"
-                                        style="cursor: pointer;color: #64c864;margin-left: 20px;">
+                                    <bk-icon type="arrows-right-shape" @click="translation()" style="cursor: pointer;color: #64c864;margin-left: 20px;">
                                     </bk-icon>
                                 </div>
                             </div>
@@ -249,10 +245,7 @@
                                     ext-popover-cls="select-popover-custom"
                                     :placeholder="'请选择专辑类型'"
                                     searchable>
-                                    <bk-option v-for="option in albumTypeList"
-                                        :key="option.id"
-                                        :id="option.id"
-                                        :name="option.name">
+                                    <bk-option v-for="option in albumTypeList" :key="option.id" :id="option.id" :name="option.name">
                                     </bk-option>
                                 </bk-select>
                             </div>
@@ -263,20 +256,15 @@
             <transition name="bk-slide-fade-left">
                 <div style="margin-left: 40px;width: 500px;margin-top: 20px;" v-show="checkedIds.length > 0">
                     <div style="width: 100%;display: flex;">
-                        <bk-button :theme="'primary'" :loading="isLoading" @click="handleBatch" class="mr10"
-                            style="width: 100%;">
+                        <bk-button :theme="'primary'" :loading="isLoading" @click="handleBatch" class="mr10" style="width: 100%;">
                             手动修改
                         </bk-button>
                     </div>
                     <div style="width: 100%;display: flex;margin-top: 10px;">
-                        <bk-button :theme="'success'" :loading="isLoading"
-                            @click="exampleSetting1.primary.visible = true" class="mr10"
-                            style="width: 50%;">
+                        <bk-button :theme="'success'" :loading="isLoading" @click="exampleSetting1.primary.visible = true" class="mr10" style="width: 50%;">
                             自动修改
                         </bk-button>
-                        <bk-button :theme="'success'" :loading="isLoading"
-                            @click="exampleSetting2.primary.visible = true" class="mr10"
-                            style="width: 50%;">
+                        <bk-button :theme="'success'" :loading="isLoading" @click="exampleSetting2.primary.visible = true" class="mr10" style="width: 50%;">
                             整理文件夹
                         </bk-button>
                     </div>
@@ -284,10 +272,10 @@
                         <div style="color: gray;font-size: 12px;">手动修改参数</div>
                     </bk-divider>
                     <div style="display: flex;margin-bottom: 10px;align-items: center;margin-top: 10px;">
-                        <div class="label1 can-copy" v-bk-tooltips="'变量名:${title}'" v-bk-copy="'${title}'">标题：</div>
+                        <div class="label1 can-copy" v-bk-tooltips="'变量名:${title}'" v-bk-copy="'${title}'">标题：
+                        </div>
                         <div style="width: 70%;">
-                            <bk-input :clearable="true" v-model="musicInfoManual.title"
-                                :placeholder="'支持变量批量修改'"></bk-input>
+                            <bk-input :clearable="true" v-model="musicInfoManual.title" :placeholder="'支持变量批量修改'"></bk-input>
                         </div>
                     </div>
                     <div v-for="(item, index) in showFields" :key="'l2' + index">
@@ -296,27 +284,26 @@
                                 文件名：
                             </div>
                             <div style="width: 70%;">
-                                <bk-input :clearable="true" v-model="musicInfoManual.filename"
-                                    :placeholder="'例如：${title}-${album}'"></bk-input>
+                                <bk-input :clearable="true" v-model="musicInfoManual.filename" :placeholder="'例如：${title}-${album}'"></bk-input>
                             </div>
                         </div>
                         <div class="edit-item" v-else-if="item === 'artist'">
                             <div class="label1 can-copy" v-bk-tooltips="'变量名:${artist}'" v-bk-copy="'${artist}'">艺术家：
                             </div>
                             <div style="width: 70%;">
-                                <bk-input :clearable="true" v-model="musicInfoManual.artist"
-                                    :placeholder="'具体哪些变量,鼠标悬浮在标题上查看'"></bk-input>
+                                <bk-input :clearable="true" v-model="musicInfoManual.artist" :placeholder="'具体哪些变量,鼠标悬浮在标题上查看'"></bk-input>
                             </div>
                         </div>
                         <div class="edit-item" v-else-if="item === 'album'">
-                            <div class="label1 can-copy" v-bk-tooltips="'变量名:${album}'" v-bk-copy="'${album}'">专辑：</div>
+                            <div class="label1 can-copy" v-bk-tooltips="'变量名:${album}'" v-bk-copy="'${album}'">
+                                专辑：
+                            </div>
                             <div style="width: 70%;">
                                 <bk-input :clearable="true" v-model="musicInfoManual.album"></bk-input>
                             </div>
                         </div>
                         <div class="edit-item" v-else-if="item === 'albumartist'">
-                            <div class="label1 can-copy" v-bk-tooltips="'变量名:${albumartist}'"
-                                v-bk-copy="'${albumartist}'">专辑艺术家：
+                            <div class="label1 can-copy" v-bk-tooltips="'变量名:${albumartist}'" v-bk-copy="'${albumartist}'">专辑艺术家：
                             </div>
                             <div style="width: 70%;">
                                 <bk-input :clearable="true" v-model="musicInfoManual.albumartist"></bk-input>
@@ -333,10 +320,7 @@
                                     ext-popover-cls="select-popover-custom"
                                     :placeholder="'请选择歌曲风格'"
                                     searchable>
-                                    <bk-option v-for="option in genreList"
-                                        :key="option.id"
-                                        :id="option.id"
-                                        :name="option.name">
+                                    <bk-option v-for="option in genreList" :key="option.id" :id="option.id" :name="option.name">
                                     </bk-option>
                                 </bk-select>
                             </div>
@@ -352,10 +336,7 @@
                                     ext-popover-cls="select-popover-custom"
                                     :placeholder="'请选择歌曲语言'"
                                     searchable>
-                                    <bk-option v-for="option in languageList"
-                                        :key="option.id"
-                                        :id="option.id"
-                                        :name="option.name">
+                                    <bk-option v-for="option in languageList" :key="option.id" :id="option.id" :name="option.name">
                                     </bk-option>
                                 </bk-select>
                             </div>
@@ -366,14 +347,11 @@
                                 <bk-input :clearable="true" v-model="musicInfoManual.year"></bk-input>
                             </div>
                         </div>
-                        <div style="display: flex;margin-bottom: 10px;flex-direction: column;"
-                            v-else-if="item === 'lyrics'">
+                        <div style="display: flex;margin-bottom: 10px;flex-direction: column;" v-else-if="item === 'lyrics'">
                             <div style="display: flex;">
                                 <div class="label1">歌词：</div>
                                 <div style="width: 70%;">
-                                    <bk-input :clearable="true" v-model="musicInfoManual.lyrics" type="textarea"
-                                        :rows="15"
-                                    ></bk-input>
+                                    <bk-input :clearable="true" v-model="musicInfoManual.lyrics" type="textarea" :rows="15"></bk-input>
                                 </div>
                             </div>
                             <div style="display: flex;margin-top: 10px;">
@@ -384,8 +362,7 @@
                         <div class="edit-item" v-else-if="item === 'comment'">
                             <div class="label1">描述：</div>
                             <div style="width: 70%;">
-                                <bk-input :clearable="true" v-model="musicInfoManual.comment"
-                                    type="textarea"></bk-input>
+                                <bk-input :clearable="true" v-model="musicInfoManual.comment" type="textarea"></bk-input>
                             </div>
                         </div>
                         <div class="edit-item" v-else-if="item === 'album_img'">
@@ -447,20 +424,15 @@
                             <div class="title2">年份</div>
                         </div>
                         <div v-for="(item,index) in SongList" :key="index" style="margin-bottom: 10px;" class="parent">
-                            <bk-icon type="arrows-left-shape" @click="copyAll(item)"
-                                style="margin-right: 5px;cursor: pointer;"></bk-icon>
+                            <bk-icon type="arrows-left-shape" @click="copyAll(item)" style="margin-right: 5px;cursor: pointer;"></bk-icon>
                             <div v-if="resource === 'smart_tag'">
                                 <bk-badge class="mr40" :theme="'warning'" :val="item.score" radius="20%">
-                                    <bk-image fit="contain" :src="item.album_img"
-                                        style="width: 64px;cursor: pointer;"
-                                        @click="handleCopy('album_img',item.album_img)">
+                                    <bk-image fit="contain" :src="item.album_img" style="width: 64px;cursor: pointer;" @click="handleCopy('album_img',item.album_img)">
                                     </bk-image>
                                 </bk-badge>
                             </div>
                             <div v-else>
-                                <bk-image fit="contain" :src="item.album_img"
-                                    style="width: 64px;cursor: pointer;"
-                                    @click="handleCopy('album_img',item.album_img)">
+                                <bk-image fit="contain" :src="item.album_img" style="width: 64px;cursor: pointer;" @click="handleCopy('album_img',item.album_img)">
                                 </bk-image>
                             </div>
                             <div @click="handleCopy('title',item.name)" class="music-item">
@@ -496,28 +468,19 @@
             <transition name="bk-slide-fade-left">
                 <div v-show="showTranslation">
                     <div style="display: flex;height: 100%;">
-                        <bk-icon type="arrows-left-shape" @click="handleCopy('lyric_tran',translationText)"
-                            style="margin-right: 5px;margin-left: 15px;margin-top: 50%;cursor: pointer;"></bk-icon>
+                        <bk-icon type="arrows-left-shape" @click="handleCopy('lyric_tran',translationText)" style="margin-right: 5px;margin-left: 15px;margin-top: 50%;cursor: pointer;"></bk-icon>
                         <div style="width: 100%;height: 100%;">
-                            <bk-input :clearable="true" v-model="translationText" type="textarea" :rows="50"
-                                style="height: 100%;">
+                            <bk-input :clearable="true" v-model="translationText" type="textarea" :rows="50" style="height: 100%;">
                             </bk-input>
                         </div>
                     </div>
                 </div>
             </transition>
-            <div v-show="!fadeShowDetail && !showTranslation"
-                style="width: 90%;height: 90%; margin: 50px 20px 20px 50px;">
-                <bk-image fit="contain" :src="'/static/dist/img/music_null-cutout.png'"
-                    style="width: 100%;height: 98%;"></bk-image>
+            <div v-show="!fadeShowDetail && !showTranslation" style="width: 90%;height: 90%; margin: 50px 20px 20px 50px;">
+                <bk-image fit="contain" :src="'/static/dist/img/music_null-cutout.png'" style="width: 100%;height: 98%;"></bk-image>
             </div>
         </div>
-        <bk-dialog v-model="exampleSetting1.primary.visible"
-            theme="primary"
-            :mask-close="false"
-            @confirm="handleBatchAuto"
-            :header-position="exampleSetting1.primary.headerPosition"
-            title="自动批量修改">
+        <bk-dialog v-model="exampleSetting1.primary.visible" theme="primary" :mask-close="false" @confirm="handleBatchAuto" :header-position="exampleSetting1.primary.headerPosition" title="自动批量修改">
             <p>宽松模式: 只根据标题匹配元数据, 可能存在同名或翻唱歌曲。</p>
             <p>严格模式: 根据标题和歌手或标题和专辑匹配元数据, 准确性更高。</p>
             <bk-radio-group v-model="selectAutoMode">
@@ -529,24 +492,12 @@
                 </bk-radio-button>
             </bk-radio-group>
             <div>音乐源顺序</div>
-            <bk-select style="width: 250px;"
-                searchable
-                multiple
-                show-select-all
-                v-model="sourceList">
-                <bk-option v-for="option in resourceListBatch"
-                    :key="option.id"
-                    :id="option.id"
-                    :name="option.name">
+            <bk-select style="width: 250px;" searchable multiple show-select-all v-model="sourceList">
+                <bk-option v-for="option in resourceListBatch" :key="option.id" :id="option.id" :name="option.name">
                 </bk-option>
             </bk-select>
         </bk-dialog>
-        <bk-dialog v-model="exampleSetting2.primary.visible"
-            theme="primary"
-            :mask-close="false"
-            @confirm="handleTidy"
-            :header-position="exampleSetting2.primary.headerPosition"
-            title="整理文件夹">
+        <bk-dialog v-model="exampleSetting2.primary.visible" theme="primary" :mask-close="false" @confirm="handleTidy" :header-position="exampleSetting2.primary.headerPosition" title="整理文件夹">
             <p>整理文件夹，按一级目录，二级目录选定的信息分类</p>
             <div>整理后的根目录</div>
             <div class="input-demo">
@@ -554,31 +505,17 @@
                 </bk-input>
             </div>
             <div>一级目录</div>
-            <bk-select style="width: 250px;"
-                :clearable="false"
-                v-model="tidyFormData.first_dir">
-                <bk-option v-for="option in tidyList"
-                    :key="option.id"
-                    :id="option.id"
-                    :name="option.name">
+            <bk-select style="width: 250px;" :clearable="false" v-model="tidyFormData.first_dir">
+                <bk-option v-for="option in tidyList" :key="option.id" :id="option.id" :name="option.name">
                 </bk-option>
             </bk-select>
             <div>二级目录</div>
-            <bk-select style="width: 250px;"
-                v-model="tidyFormData.second_dir">
-                <bk-option v-for="option in tidyList"
-                    :key="option.id"
-                    :id="option.id"
-                    :name="option.name">
+            <bk-select style="width: 250px;" v-model="tidyFormData.second_dir">
+                <bk-option v-for="option in tidyList" :key="option.id" :id="option.id" :name="option.name">
                 </bk-option>
             </bk-select>
         </bk-dialog>
-        <bk-dialog v-model="exampleSetting3.primary.visible"
-            theme="primary"
-            :mask-close="false"
-            @confirm="handleSettings"
-            :header-position="exampleSetting3.primary.headerPosition"
-            title="配置">
+        <bk-dialog v-model="exampleSetting3.primary.visible" theme="primary" :mask-close="false" @confirm="handleSettings" :header-position="exampleSetting3.primary.headerPosition" title="配置">
             <p>选择你的配置，浏览器会保存你的默认值</p>
             <div>标签来源</div>
             <bk-select
@@ -588,23 +525,12 @@
                 style="width: 200px;"
                 ext-cls="select-custom"
                 ext-popover-cls="select-popover-custom">
-                <bk-option v-for="option in resourceList"
-                    :key="option.id"
-                    :id="option.id"
-                    :name="option.name">
+                <bk-option v-for="option in resourceList" :key="option.id" :id="option.id" :name="option.name">
                 </bk-option>
             </bk-select>
             <div>展示的字段以及顺序</div>
-            <bk-select style="width: 350px;margin-top: 10px;"
-                searchable
-                :clearable="false"
-                multiple
-                display-tag
-                v-model="showFields">
-                <bk-option v-for="option in fieldList"
-                    :key="option.id"
-                    :id="option.id"
-                    :name="option.name">
+            <bk-select style="width: 350px;margin-top: 10px;" searchable :clearable="false" multiple display-tag v-model="showFields">
+                <bk-option v-for="option in fieldList" :key="option.id" :id="option.id" :name="option.name">
                 </bk-option>
             </bk-select>
         </bk-dialog>
@@ -653,6 +579,7 @@
                 ],
                 searchWord: '',
                 showContent: 1,
+                staticPath: '',
                 treeListOne: [],
                 fullPath: '',
                 fileName: '',
@@ -754,7 +681,12 @@
                         headerPosition: 'left'
                     }
                 },
-                sortedField: localStorage.getItem('sortedField') ? JSON.parse(localStorage.getItem('sortedField')) : []
+                sortedField: localStorage.getItem('sortedField') ? JSON.parse(localStorage.getItem('sortedField')) : [],
+                playInfo: {
+                    currentTime: 0,
+                    duration: 0,
+                    audioCanPlay: false
+                }
             }
         },
         computed: {
@@ -783,26 +715,74 @@
             this.handleSearchFile()
         },
         methods: {
+            formatTime(timeInt) {
+                if (typeof timeInt === 'undefined') {
+                    return '00:00:00'
+                }
+                timeInt = parseInt(timeInt)
+                let hour = parseInt(timeInt / 3600)
+                let minute = parseInt(timeInt % 3600 / 60)
+                let second = parseInt(timeInt % 60)
+                if (hour < 10) {
+                    hour = '0' + hour
+                }
+                if (minute < 10) {
+                    minute = '0' + minute
+                }
+                if (second < 10) {
+                    second = '0' + second
+                }
+                return hour + ':' + minute + ':' + second
+            },
+            audioCanPlay(e) {
+                console.log('视屏可以开始播放了')
+                const audio = document.querySelector('#audio-play')
+                document.querySelector('#audio-duration').textContent = this.formatTime(audio.duration)
+                this.playInfo.audioCanPlay = true
+            },
+            audioPlay(e) {
+                console.log(e)
+            },
+            audioProcessClick(e) {
+                const audio = document.querySelector('#audio-play')
+                const processBar = document.querySelector('#progressBar')
+                this.playInfo.currentTime = (e.offsetX / processBar.offsetWidth) * audio.duration
+                const t = (e.offsetX / processBar.offsetWidth) * audio.duration
+                if (this.playInfo.audioCanPlay) {
+                    audio.currentTime = t
+                }
+            },
+            updateProcess(e) {
+                // if (typeof processBar === 'undefined') {
+                //     processBar = document.querySelector('#progressBar')
+                // } else if (typeof processBar === 'string') {
+                //     processBar = document.querySelector(processBar)
+                // }
+                const processBar = document.querySelector('#progressBar')
+                const audio = document.querySelector('#audio-play')
+                processBar.value = (audio.currentTime / audio.duration) * 100
+                document.querySelector('#audio-current-time').textContent = this.formatTime(audio.currentTime)
+            },
             tpl(node, ctx) {
                 // 如果在某些情况下 h 不能自动注入而报错，需将 h 参数写上；一般来说 h 默认是第一参数，但是现在改为第一参数会导致已经使用的用户都需要修改，所以先放在最后。
                 // 如果 h 能自动注入则可以忽略 h 参数，无需写上，否则 h 参数会重复。
                 const titleClass = node.selected ? 'node-title node-selected' : 'node-title ' + node.state
                 if (node.title.length > 25) {
                     return <span>
-                    <span class={titleClass} domPropsInnerHTML={node.title.slice(0, 25)}
-                        onClick={() => {
-                            this.nodeClickOne(node)
-                        }} v-bk-tooltips={node.title}>
-                    </span>
-                    </span>
+                        <span class={titleClass} domPropsInnerHTML={node.title.slice(0, 25)}
+                              onClick={() => {
+                                  this.nodeClickOne(node)
+                              }} v-bk-tooltips={node.title}>
+                        </span>
+                        </span>
                 } else {
                     return <span>
-                    <span class={titleClass} domPropsInnerHTML={node.title.slice(0, 25)}
-                        onClick={() => {
-                            this.nodeClickOne(node)
-                        }}>
-                    </span>
-                    </span>
+                        <span class={titleClass} domPropsInnerHTML={node.title.slice(0, 25)}
+                              onClick={() => {
+                                  this.nodeClickOne(node)
+                              }}>
+                        </span>
+                        </span>
                 }
             },
             backDir() {
@@ -834,12 +814,14 @@
                     if (node.children && node.children.length > 0) {
                         return
                     }
+                    console.log(node)
                     this.musicInfo = this.baseMusicInfo
                     this.fileName = node.name
                     this.fullPath = this.filePath + '/' + node.name
                     this.$api.Task.musicId3({'file_path': this.filePath, 'file_name': node.name}).then((res) => {
                         console.log(res)
                         if (res.result) {
+                            this.staticPath = res.data.static_path
                             this.musicInfo = res.data
                             this.musicInfo.is_save_lyrics_file = false
                             this.musicInfo.is_save_album_cover = false
@@ -974,7 +956,11 @@
                 this.fadeShowDir = false
                 this.checkedData = []
                 this.checkedIds = []
-                this.$api.Task.fileList({'file_path': this.filePath, sorted_fields: this.sortedField, 'show_content': this.showContent}).then((res) => {
+                this.$api.Task.fileList({
+                    'file_path': this.filePath,
+                    sorted_fields: this.sortedField,
+                    'show_content': this.showContent
+                }).then((res) => {
                     if (res.result) {
                         this.treeListOne = res.data
                         this.fadeShowDir = true
@@ -1123,6 +1109,18 @@
             }
         }
     }
+
+    // const audio = document.querySelector('#audio-play')
+    // const progressBar = document.querySelector('#progressBar')
+    // audio.addEventListener('timeupdate', () => {
+    //     const progress = (audio.currentTime / audio.duration) * 100
+    //     progressBar.value = progress
+    // })
+    //
+    // progressBar.addEventListener('input', () => {
+    //     const seekTime = (progressBar.value / 100) * audio.duration
+    //     audio.currentTime = seekTime
+    // })
 </script>
 <style lang="postcss">
 .bk-table-header .custom-header-cell {
@@ -1209,6 +1207,7 @@
         margin: 10px 0 10px 10px;
         border-radius: 20px;
     }
+
     .edit-section {
         background: #fff;
         height: calc(100vh - 75px);

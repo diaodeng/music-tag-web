@@ -2,10 +2,13 @@ import json
 import logging
 import traceback
 
+from django.http import HttpResponse
 from django.conf import settings
 from django.http import Http404, JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.translation import gettext_lazy as _
+
+from applications.task.constants import ALLOW_TYPE
 
 from component.utils.exceptions import BlueException
 
@@ -17,6 +20,19 @@ except ImportError:
     sentry_exception_handler = None
 
 logger = logging.getLogger('blueapps')
+
+
+class AddHeaderMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        # 检查请求的URL以确定是否需要添加响应头
+        if request.path.split(".")[-1] in ALLOW_TYPE:
+            response['Accept-Ranges'] = 'bytes'  # chrome中设置音乐播放进度需要这个头，firefox不需要
+
+        return response
 
 
 class AppExceptionMiddleware(MiddlewareMixin):

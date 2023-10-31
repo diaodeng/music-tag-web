@@ -98,7 +98,8 @@ async def handle_path(entry, index, show_content, task_map):
         "icon": icon,
         "state": task_map.get(each, "null"),
         "size": size,
-        "update_time": update_time
+        "update_time": update_time,
+        "static_path": path.replace("/app", "")
     }
 
 
@@ -278,6 +279,7 @@ class TaskViewSets(GenericViewSet):
             return self.success_response()
         try:
             res_data = MusicIDS(f"{file_path}/{file_name}").to_dict()
+            res_data["static_path"] = os.path.join(file_path.replace("/app", ""), file_name)
         except Exception as e:
             return self.failure_response(msg=str(e))
         return self.success_response(data=res_data)

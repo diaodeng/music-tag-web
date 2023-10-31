@@ -35,7 +35,12 @@ INSTALLED_APPS = [
 
 ]
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "media")
+]
+
 MIDDLEWARE = [
+    "component.drf.middleware.AddHeaderMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
