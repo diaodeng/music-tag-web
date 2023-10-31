@@ -56,7 +56,6 @@ async def handle_entry(entry, index, show_content, task_map):
 
 
 async def handle_path(entry, index, show_content, task_map):
-    print(f"是同时运行的吗：{time.process_time()}")
     each = entry.name.encode('utf-8', 'replace').decode()
     path = entry.path.encode('utf-8', 'replace').decode()
     update_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(entry.stat().st_mtime))
