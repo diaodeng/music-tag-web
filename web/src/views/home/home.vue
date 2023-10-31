@@ -63,17 +63,7 @@
                         </div>
                     </div>
                     <div tyle="width: 100%;display: flex;align-items: center;">
-                        <label id="audio-current-time">00:00:00</label>
-                        <input id="progressBar" type="range" min="0" max="100" @click="audioProcessClick">
-                        <label id="audio-duration">00:00:00</label>
-                    </div>
-                    <div tyle="width: 100%;display: flex;align-items: center;">
-                        <audio id="audio-play" :src="staticPath" loop="loop" preload="metadata" @timeupdate="updateProcess" @canplay="audioCanPlay"></audio>
-                        <button onclick="document.querySelector('#audio-play').play()">播放</button>
-                        <button onclick="document.querySelector('#audio-play').pause()">暂停</button>
-                        <button onclick="document.querySelector('#audio-play').muted = true">静音</button>
-                        <button onclick="document.querySelector('#audio-play').muted = false">取消静音</button>
-                        <input type="range" min="0" max="100" onchange="document.querySelector('#audio-play').volume=this.value/100">
+                        <audio id="audio-play" :src="staticPath" loop="loop" preload="metadata" controls="controls"></audio>
                     </div>
                     <div style="display: flex;margin-bottom: 10px;align-items: center;margin-top: 10px;">
                         <div class="label1 can-copy" v-bk-tooltips="'变量名:${title}'" v-bk-copy="'${title}'">标题：
@@ -715,54 +705,6 @@
             this.handleSearchFile()
         },
         methods: {
-            formatTime(timeInt) {
-                if (typeof timeInt === 'undefined') {
-                    return '00:00:00'
-                }
-                timeInt = parseInt(timeInt)
-                let hour = parseInt(timeInt / 3600)
-                let minute = parseInt(timeInt % 3600 / 60)
-                let second = parseInt(timeInt % 60)
-                if (hour < 10) {
-                    hour = '0' + hour
-                }
-                if (minute < 10) {
-                    minute = '0' + minute
-                }
-                if (second < 10) {
-                    second = '0' + second
-                }
-                return hour + ':' + minute + ':' + second
-            },
-            audioCanPlay(e) {
-                console.log('视屏可以开始播放了')
-                const audio = document.querySelector('#audio-play')
-                document.querySelector('#audio-duration').textContent = this.formatTime(audio.duration)
-                this.playInfo.audioCanPlay = true
-            },
-            audioPlay(e) {
-                console.log(e)
-            },
-            audioProcessClick(e) {
-                const audio = document.querySelector('#audio-play')
-                const processBar = document.querySelector('#progressBar')
-                this.playInfo.currentTime = (e.offsetX / processBar.offsetWidth) * audio.duration
-                const t = (e.offsetX / processBar.offsetWidth) * audio.duration
-                if (this.playInfo.audioCanPlay) {
-                    audio.currentTime = t
-                }
-            },
-            updateProcess(e) {
-                // if (typeof processBar === 'undefined') {
-                //     processBar = document.querySelector('#progressBar')
-                // } else if (typeof processBar === 'string') {
-                //     processBar = document.querySelector(processBar)
-                // }
-                const processBar = document.querySelector('#progressBar')
-                const audio = document.querySelector('#audio-play')
-                processBar.value = (audio.currentTime / audio.duration) * 100
-                document.querySelector('#audio-current-time').textContent = this.formatTime(audio.currentTime)
-            },
             tpl(node, ctx) {
                 // 如果在某些情况下 h 不能自动注入而报错，需将 h 参数写上；一般来说 h 默认是第一参数，但是现在改为第一参数会导致已经使用的用户都需要修改，所以先放在最后。
                 // 如果 h 能自动注入则可以忽略 h 参数，无需写上，否则 h 参数会重复。
